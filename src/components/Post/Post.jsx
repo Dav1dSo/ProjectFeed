@@ -1,3 +1,4 @@
+import { Avatar } from '../Avatar/Avatar'
 import { Comment } from '../Comments/Commnets'
 import styles from './Post.module.css'
 
@@ -6,7 +7,7 @@ export function Post(props) {
         <article className={styles.post}>
             <header>
                 <div className={styles.author}>
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZZEwmuUASNMdxx4tE5b_LE2BFZv7YPEcxYQ&s" alt="" /> 
+                    <Avatar hasBorder src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZZEwmuUASNMdxx4tE5b_LE2BFZv7YPEcxYQ&s"/> 
                     <div className={styles.authorInfo}> 
                         <strong> User Name </strong>
                         <span> Web Developer </span>                  
@@ -19,7 +20,7 @@ export function Post(props) {
             <div className={styles.content}>
 
                 <p>
-                    Jorge o Urso diz Oi!
+                    Software Developer
                 </p>
 
                 <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto, vero quasi? Mollitia corporis vel ab in, quidem debitis? Voluptate eum accusamus suscipit veniam perferendis, iusto quidem reprehenderit temporibus vitae eius. </p>
@@ -28,9 +29,9 @@ export function Post(props) {
                 </p>
 
                 <p>
-                    <a href="#">#rocketseat</a>{' '}
+                    <a href="#">#feed</a>{' '}
                     <a href="#">#nlw</a>{' '}
-                    <a href="#">#rocketseat</a>
+                    <a href="#">#posts</a>
                 </p>
             </div>
 
