@@ -4,9 +4,41 @@ import { Avatar } from '../Avatar/Avatar'
 import { Comment } from '../Comments/Commnets'
 import styles from './Post.module.css'
 import { nanoid } from 'nanoid'
-import { useState } from 'react'
+import { FormEvent, useState } from 'react'
 
-export function Post({ author, publishedAt, content, comments }) {
+interface Author {
+    name: string,
+    role: string,
+    bio: string,
+    avatarUrl: string       
+}
+
+interface Content {
+    type: string,
+    content: string | string[];
+    url?: string
+}   
+
+interface Comment {
+    id: string,
+    author: {
+        name: string,
+        avatarUrl: string
+    },
+    content: string,
+    publishedAt: string | Date,
+    likes: number
+}
+
+interface PostProps {
+    author: Author,
+    publishedAt: Date,
+    content: Content[],
+    comments: Comment[]
+}   
+
+
+export function Post({ author, publishedAt, content, comments }: PostProps) {
 
     const commentsData = [...comments]
     const [commentsList, setCommentsList] = useState(commentsData)  
@@ -17,7 +49,7 @@ export function Post({ author, publishedAt, content, comments }) {
         locale: ptBR
     })
 
-    function handlerLikeComment(contentId) {
+    function handlerLikeComment(contentId: string) {
         const commentsAfterLike = commentsList.map(comment => {
             if (comment.id === contentId) {
                 return {
@@ -37,28 +69,28 @@ export function Post({ author, publishedAt, content, comments }) {
         addSuffix: true
     })
 
-    function handlerDeleteComment(contnetId) {
+    function handlerDeleteComment(contnetId: string) {
         console.log(`deletar comentário! ${contnetId}`);
 
         const CommentsAfterDelete = commentsList.filter(comment => comment.id !== contnetId)
         setCommentsList(CommentsAfterDelete)
     }
 
-    function handlerFormSubmit(event) {  
+    function handlerFormSubmit(event: FormEvent) {  
         event.preventDefault()
  
-        const newComment = {
+        const newComment: Comment = {
             id: nanoid(),
             author: {   
                 name: author.name,   
                 avatarUrl: author.avatarUrl   
             },
             content: contentComment,
-            publishedAt: new Date().toISOString().slice(0, 19),
-            likes: likesComment
+            publishedAt: new Date(),
+            likes: 0
         }
 
-        setCommentsList((prevComments) => [...prevComments, newComment]);
+        setCommentsList((prevComments: Comment[]) => [...prevComments, newComment]);
         setContentComment('');
     }
     
@@ -74,7 +106,7 @@ export function Post({ author, publishedAt, content, comments }) {
                 </div>
                     <time 
                         title={publishedDateFormatted}
-                        dateTime={publishedAt}>
+                        dateTime={publishedAt.toISOString()}>
                         {DateRelativeNow} 
                     </time>
 
@@ -92,10 +124,10 @@ export function Post({ author, publishedAt, content, comments }) {
                             </p>;
                         } else if (line.type === 'hashtags') {
                             return (
-                                <p key={`hashtags-${line.content.join('-')}-${lineIndex}`}>
-                                    {line.content.map((hashtag, index) => (
+                                <p key={`hashtags-${Array.isArray(line.content) ? line.content.join('-') : line.content}-${lineIndex}`}>
+                                    {Array.isArray(line.content) ? line.content.map((hashtag, index) => (
                                         <a key={`hashtag-${hashtag}-${index}`} href={`#${hashtag}`}>{hashtag}</a>
-                                    ))}
+                                    )) : line.content}
                                 </p>
                             );
                         }
@@ -112,8 +144,14 @@ export function Post({ author, publishedAt, content, comments }) {
                     onChange={(event) => setContentComment(event.target.value)}
                     placeholder="Deixe um comentário"
                     required
-                    onInvalid={(event) => event.target.setCustomValidity('Esse campo e obrigatorio!')}
-                    onInput={(event) => event.target.setCustomValidity('')}
+                    onInvalid={(event) => {
+                        const target = event.target as HTMLTextAreaElement;
+                        target.setCustomValidity('Esse campo e obrigatorio!');
+                    }}
+                    onInput={(event) => {
+                        const target = event.target as HTMLTextAreaElement;
+                        target.setCustomValidity('');
+                    }}
                 />  
 
                 <footer>

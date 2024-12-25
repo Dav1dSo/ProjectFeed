@@ -3,9 +3,26 @@ import styles from "./Comments.module.css";
 import { format, formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
-export function Comment({comment, onDeleteComment, onLikeComment}) {
+interface Comment {
+    id: string;
+    author: {
+        name: string;
+        avatarUrl: string;
+    };
+    content: string;
+    publishedAt: string | Date;
+    likes: number;
+}
 
-    function handlerDeleteComment ( ){
+interface CommentProps {
+    comment: Comment;
+    onDeleteComment: (commentId: string) => void;
+    onLikeComment: (commentId: string) => void;
+}
+
+export function Comment({ comment, onDeleteComment, onLikeComment }: CommentProps) {
+
+    function handlerDeleteComment() {
         onDeleteComment(comment.id)
     }
 
@@ -18,25 +35,25 @@ export function Comment({comment, onDeleteComment, onLikeComment}) {
         addSuffix: true
     })
 
-    function handlerLikeComment() { 
+    function handlerLikeComment() {
         onLikeComment(comment.id)
     }
-    
-    return ( 
+
+    return (
         <div className={styles.comment}>
-            <img src={comment.author.avatarUrl} alt="" />           
+            <img src={comment.author.avatarUrl} alt="" />
 
             <div className={styles.commentBox}>
                 <div className={styles.commentContent}>
                     <header>
                         <div className={styles.authorAndTime}>
                             <strong> {comment.author.name} </strong>
-                            <time title={commentDateFormatted} dateTime={comment.publishedAt}> {diffTimeNow} </time>
-                        </div> 
+                            <time title={commentDateFormatted} dateTime={comment.publishedAt instanceof Date ? comment.publishedAt.toISOString() : comment.publishedAt}> {diffTimeNow} </time>
+                        </div>
                         <button onClick={handlerDeleteComment} title="Deletar comentário">
-                            <Trash size={24} /> 
+                            <Trash size={24} />
                         </button>
-                    </header> 
+                    </header>
 
                     <p>
                         {comment.content}
@@ -47,9 +64,9 @@ export function Comment({comment, onDeleteComment, onLikeComment}) {
                             <ThumbsUp />
                             Aplaudir <span>{comment.likes}</span>
                         </button>
-                    </footer> 
+                    </footer>
                 </div>
             </div>
         </div>
     )
-}   
+}
