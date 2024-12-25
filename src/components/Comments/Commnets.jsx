@@ -1,17 +1,31 @@
 import { ThumbsUp, Trash } from "phosphor-react";
 import styles from "./Comments.module.css";
+import { format, formatDistanceToNow } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
-export function Comment() {
+export function Comment({comment}) {
+
+    const commentDateFormatted = format(comment.publishedAt, "d 'de' LLLL 'as' HH:mm'h'", {
+        locale: ptBR
+    })
+
+    const diffTimeNow = formatDistanceToNow(comment.publishedAt, {
+        locale: ptBR,
+        addSuffix: true
+    })
+
+    console.log(comment);
+    
     return ( 
         <div className={styles.comment}>
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZZEwmuUASNMdxx4tE5b_LE2BFZv7YPEcxYQ&s" alt="" />           
+            <img src={comment.author.avatarUrl} alt="" />           
 
             <div className={styles.commentBox}>
                 <div className={styles.commentContent}>
                     <header>
                         <div className={styles.authorAndTime}>
-                            <strong> User Name </strong>
-                            <time title="20 de março às 8h" dateTime="2023-03-20 20:00:00"> Publicado há 1h </time>
+                            <strong> {comment.author.name} </strong>
+                            <time title={commentDateFormatted} dateTime={comment.publishedAt}> {diffTimeNow} </time>
                         </div> 
                         <button title="Deletar comentário">
                             <Trash size={24} /> 
@@ -19,13 +33,13 @@ export function Comment() {
                     </header> 
 
                     <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.
+                        {comment.content}
                     </p>
 
                     <footer>
                         <button>
                             <ThumbsUp />
-                            Aplaudir <span>20</span>
+                            Aplaudir <span>{comment.likes}</span>
                         </button>
                     </footer> 
                 </div>

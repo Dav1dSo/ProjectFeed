@@ -1,57 +1,88 @@
+import {format, formatDistanceToNow} from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 import { Avatar } from '../Avatar/Avatar'
 import { Comment } from '../Comments/Commnets'
 import styles from './Post.module.css'
 
-export function Post(props) {
+export function Post({ author, publishedAt, content, comments }) {
+
+    const publishedDateFormatted = format(publishedAt, "d 'de' LLLL 'as' HH:mm'h'", {
+        locale: ptBR
+    })
+
+    const DateRelativeNow = formatDistanceToNow(publishedAt, {
+        locale: ptBR,
+        addSuffix: true
+    })
+
+    function handlerFormSubmit() {  
+        event.preventDefault()
+        console.log('teste');
+    }
+
     return (
         <article className={styles.post}>
             <header>
                 <div className={styles.author}>
-                    <Avatar hasBorder src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZZEwmuUASNMdxx4tE5b_LE2BFZv7YPEcxYQ&s"/> 
+                    <Avatar hasBorder src={author.avatarUrl}/> 
                     <div className={styles.authorInfo}> 
-                        <strong> User Name </strong>
-                        <span> Web Developer </span>                  
+                        <strong>{author.name}</strong>
+                        <span> {author.role}</span>                  
                     </div>
                 </div>
-                <time title="20 de março às 8h" dateTime="2023-03-20 20:00:00"> Publicado há 1h </time>
+                    <time 
+                        title={publishedDateFormatted}
+                        dateTime={publishedAt}>
+                        {DateRelativeNow} 
+                    </time>
 
             </header>
 
             <div className={styles.content}>
+                <p>{author.bio}</p>
+                {
+                    content.map(line => {   
+                        if (line.type === 'paragraph') {
+                            return <p key={line.content}>{line.content}</p>
+                        } else if (line.type === 'link') {
+                            return <p key={line.content}><a href={line.url}>{line.content}</a></p>
+                        }
 
-                <p>
-                    Software Developer
-                </p>
-
-                <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto, vero quasi? Mollitia corporis vel ab in, quidem debitis? Voluptate eum accusamus suscipit veniam perferendis, iusto quidem reprehenderit temporibus vitae eius. </p>
-                <p>
-                    <a href="">jane.design/doctorcare</a>
-                </p>
-
-                <p>
-                    <a href="#">#feed</a>{' '}
-                    <a href="#">#nlw</a>{' '}
-                    <a href="#">#posts</a>
-                </p>
+                        else if (line.type === 'hashtags') {
+                            return <p key={line.content}>
+                            {line.content.map((hashtag, index) => (
+                                <>
+                                    <a key={index} href={`#${hashtag}`}>{hashtag}</a>
+                                    {index < line.content.length - 1 && ' '}
+                                </>
+                            ))}
+                        </p>
+                        }
+                    })
+                }
+                
             </div>
 
-            <form action="" className={styles.commentForm}>
+            <form onSubmit={handlerFormSubmit} className={styles.commentForm}>
                 <strong>Deixe seu feedback</strong>
 
                 <textarea
                     placeholder="Deixe um comentário"
                 />  
 
-
                 <footer>
-                    <button type="submit">Publicar</button>
+                    <button type="submit">
+                        Publicar
+                    </button>
                 </footer>
             </form> 
 
             <div className={styles.commentList}>
-                <Comment />
-                <Comment />
-                <Comment />
+                {comments.map(comment => {
+                    return (
+                        <Comment key={comment.id} comment={comment} />
+                    )
+                })}
             </div>
         </article>
     )
