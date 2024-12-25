@@ -21,7 +21,7 @@ const posts = [
     ],
     "comments": [
       { 
-        "id": 1, 
+        "id": 'o9b3EM20XeyEWMZIVOj5E', 
         "author": { 
           "name": "Lucas Pereira", 
           "avatarUrl": "https://i.pravatar.cc/150?img=12" 
@@ -31,7 +31,7 @@ const posts = [
         "likes": 20 
       },
       { 
-        "id": 2, 
+        "id": 'TvqwQwIST7r1U98VRumco', 
         "author": { 
           "name": "Carla Lima", 
           "avatarUrl": "https://i.pravatar.cc/150?img=8" 
@@ -90,7 +90,7 @@ function App() {
         <main>
             {
               posts.map(post => {
-                return (<Post 
+                return (<Post key={post.id}
                   author={post.author}
                   content={post.content}
                   comments={post.comments}

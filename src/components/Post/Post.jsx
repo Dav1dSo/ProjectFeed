@@ -3,9 +3,17 @@ import { ptBR } from 'date-fns/locale'
 import { Avatar } from '../Avatar/Avatar'
 import { Comment } from '../Comments/Commnets'
 import styles from './Post.module.css'
+import { nanoid } from 'nanoid'
+import { useState } from 'react'
 
 export function Post({ author, publishedAt, content, comments }) {
 
+    const commentsData = [...comments]
+    const [commentsList, setCommentsList] = useState(commentsData)  
+
+    const [contentComment, setContentComment] = useState('')
+    const [likesComment, setLikesComment] = useState(0)
+    
     const publishedDateFormatted = format(publishedAt, "d 'de' LLLL 'as' HH:mm'h'", {
         locale: ptBR
     })
@@ -15,11 +23,26 @@ export function Post({ author, publishedAt, content, comments }) {
         addSuffix: true
     })
 
-    function handlerFormSubmit() {  
+    function handlerFormSubmit(event) {  
         event.preventDefault()
-        console.log('teste');
-    }
+ 
+        const newComment = {
+            id: nanoid(),
+            author: {   
+                name: author.name,   
+                avatarUrl: author.avatarUrl   
+            },
+            content: contentComment,
+            publishedAt: new Date().toISOString().slice(0, 19),
+            likes: likesComment
+        }
 
+        setCommentsList((prevComments) => [...prevComments, newComment]);
+        setContentComment('');
+        console.log(commentsList);
+        
+    }
+    
     return (
         <article className={styles.post}>
             <header>
@@ -67,6 +90,9 @@ export function Post({ author, publishedAt, content, comments }) {
                 <strong>Deixe seu feedback</strong>
 
                 <textarea
+                    name='comment'
+                    value={contentComment}
+                    onChange={(event) => setContentComment(event.target.value)}
                     placeholder="Deixe um comentário"
                 />  
 
@@ -78,7 +104,7 @@ export function Post({ author, publishedAt, content, comments }) {
             </form> 
 
             <div className={styles.commentList}>
-                {comments.map(comment => {
+                {commentsList.map(comment => {
                     return (
                         <Comment key={comment.id} comment={comment} />
                     )

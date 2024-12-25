@@ -13,8 +13,6 @@ export function Comment({comment}) {
         locale: ptBR,
         addSuffix: true
     })
-
-    console.log(comment);
     
     return ( 
         <div className={styles.comment}>
