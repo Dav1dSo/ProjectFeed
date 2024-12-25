@@ -23,6 +23,13 @@ export function Post({ author, publishedAt, content, comments }) {
         addSuffix: true
     })
 
+    function handlerDeleteComment(contnetId) {
+        console.log(`deletar comentário! ${contnetId}`);
+
+        const CommentsAfterDelete = commentsList.filter(comment => comment.id !== contnetId)
+        setCommentsList(CommentsAfterDelete)
+    }
+
     function handlerFormSubmit(event) {  
         event.preventDefault()
  
@@ -39,8 +46,6 @@ export function Post({ author, publishedAt, content, comments }) {
 
         setCommentsList((prevComments) => [...prevComments, newComment]);
         setContentComment('');
-        console.log(commentsList);
-        
     }
     
     return (
@@ -64,26 +69,24 @@ export function Post({ author, publishedAt, content, comments }) {
             <div className={styles.content}>
                 <p>{author.bio}</p>
                 {
-                    content.map(line => {   
+                    content.map((line, lineIndex) => {   
                         if (line.type === 'paragraph') {
-                            return <p key={line.content}>{line.content}</p>
+                            return <p key={`paragraph-${line.content}-${lineIndex}`}>{line.content}</p>;
                         } else if (line.type === 'link') {
-                            return <p key={line.content}><a href={line.url}>{line.content}</a></p>
-                        }
-
-                        else if (line.type === 'hashtags') {
-                            return <p key={line.content}>
-                            {line.content.map((hashtag, index) => (
-                                <>
-                                    <a key={index} href={`#${hashtag}`}>{hashtag}</a>
-                                    {index < line.content.length - 1 && ' '}
-                                </>
-                            ))}
-                        </p>
+                            return <p key={`link-${line.url}-${line.content}-${lineIndex}`}>
+                                <a href={line.url}>{line.content}</a>
+                            </p>;
+                        } else if (line.type === 'hashtags') {
+                            return (
+                                <p key={`hashtags-${line.content.join('-')}-${lineIndex}`}>
+                                    {line.content.map((hashtag, index) => (
+                                        <a key={`hashtag-${hashtag}-${index}`} href={`#${hashtag}`}>{hashtag}</a>
+                                    ))}
+                                </p>
+                            );
                         }
                     })
                 }
-                
             </div>
 
             <form onSubmit={handlerFormSubmit} className={styles.commentForm}>
@@ -106,7 +109,11 @@ export function Post({ author, publishedAt, content, comments }) {
             <div className={styles.commentList}>
                 {commentsList.map(comment => {
                     return (
-                        <Comment key={comment.id} comment={comment} />
+                        <Comment 
+                            key={comment.id} 
+                            comment={comment}
+                            onDeleteComment={handlerDeleteComment}
+                        />
                     )
                 })}
             </div>

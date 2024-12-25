@@ -3,7 +3,11 @@ import styles from "./Comments.module.css";
 import { format, formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
-export function Comment({comment}) {
+export function Comment({comment, onDeleteComment}) {
+
+    function handlerDeleteComment ( ){
+        onDeleteComment(comment.id)
+    }
 
     const commentDateFormatted = format(comment.publishedAt, "d 'de' LLLL 'as' HH:mm'h'", {
         locale: ptBR
@@ -25,7 +29,7 @@ export function Comment({comment}) {
                             <strong> {comment.author.name} </strong>
                             <time title={commentDateFormatted} dateTime={comment.publishedAt}> {diffTimeNow} </time>
                         </div> 
-                        <button title="Deletar comentário">
+                        <button onClick={handlerDeleteComment} title="Deletar comentário">
                             <Trash size={24} /> 
                         </button>
                     </header> 

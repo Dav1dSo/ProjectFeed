@@ -28,7 +28,7 @@ const posts = [
         }, 
         "content": "Excelente post! A inovação na saúde é algo que realmente importa.", 
         "publishedAt": "2024-12-24T10:00:00", 
-        "likes": 20 
+        "likes": 20
       },
       { 
         "id": 'TvqwQwIST7r1U98VRumco', 
