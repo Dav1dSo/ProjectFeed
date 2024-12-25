@@ -3,7 +3,7 @@ import styles from "./Comments.module.css";
 import { format, formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
-export function Comment({comment, onDeleteComment}) {
+export function Comment({comment, onDeleteComment, onLikeComment}) {
 
     function handlerDeleteComment ( ){
         onDeleteComment(comment.id)
@@ -17,6 +17,10 @@ export function Comment({comment, onDeleteComment}) {
         locale: ptBR,
         addSuffix: true
     })
+
+    function handlerLikeComment() { 
+        onLikeComment(comment.id)
+    }
     
     return ( 
         <div className={styles.comment}>
@@ -39,7 +43,7 @@ export function Comment({comment, onDeleteComment}) {
                     </p>
 
                     <footer>
-                        <button>
+                        <button onClick={handlerLikeComment}>
                             <ThumbsUp />
                             Aplaudir <span>{comment.likes}</span>
                         </button>

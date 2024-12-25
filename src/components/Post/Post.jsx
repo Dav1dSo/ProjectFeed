@@ -12,11 +12,25 @@ export function Post({ author, publishedAt, content, comments }) {
     const [commentsList, setCommentsList] = useState(commentsData)  
 
     const [contentComment, setContentComment] = useState('')
-    const [likesComment, setLikesComment] = useState(0)
     
     const publishedDateFormatted = format(publishedAt, "d 'de' LLLL 'as' HH:mm'h'", {
         locale: ptBR
     })
+
+    function handlerLikeComment(contentId) {
+        const commentsAfterLike = commentsList.map(comment => {
+            if (comment.id === contentId) {
+                return {
+                    ...comment,
+                    likes: comment.likes + 1
+                }
+            } else {
+                return comment
+            }
+        })
+
+        setCommentsList(commentsAfterLike)
+    }
 
     const DateRelativeNow = formatDistanceToNow(publishedAt, {
         locale: ptBR,
@@ -97,10 +111,13 @@ export function Post({ author, publishedAt, content, comments }) {
                     value={contentComment}
                     onChange={(event) => setContentComment(event.target.value)}
                     placeholder="Deixe um comentário"
+                    required
+                    onInvalid={(event) => event.target.setCustomValidity('Esse campo e obrigatorio!')}
+                    onInput={(event) => event.target.setCustomValidity('')}
                 />  
 
                 <footer>
-                    <button type="submit">
+                    <button type="submit" disabled={contentComment.length === 0}>
                         Publicar
                     </button>
                 </footer>
@@ -113,6 +130,7 @@ export function Post({ author, publishedAt, content, comments }) {
                             key={comment.id} 
                             comment={comment}
                             onDeleteComment={handlerDeleteComment}
+                            onLikeComment={handlerLikeComment}
                         />
                     )
                 })}
