@@ -31,10 +31,10 @@ interface Comment {
 }
 
 interface PostProps {
-    author: Author,
-    publishedAt: Date,
-    content: Content[],
-    comments: Comment[]
+    readonly author: Author,
+    readonly publishedAt: Date,
+    readonly content: Content[],
+    readonly comments: Comment[]
 }   
 
 

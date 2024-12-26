@@ -15,9 +15,9 @@ interface Comment {
 }
 
 interface CommentProps {
-    comment: Comment;
-    onDeleteComment: (commentId: string) => void;
-    onLikeComment: (commentId: string) => void;
+    readonly comment: Comment;
+    readonly onDeleteComment: (commentId: string) => void;
+    readonly onLikeComment: (commentId: string) => void;
 }
 
 export function Comment({ comment, onDeleteComment, onLikeComment }: CommentProps) {
